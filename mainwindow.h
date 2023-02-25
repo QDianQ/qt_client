@@ -21,8 +21,6 @@ private slots:
 
     void on_connectBtn_clicked();
 
-    void on_disconnectBtn_clicked();
-
     void slotTimer();
 
     void slotTimerCheckConnection();
@@ -39,10 +37,12 @@ private:
     quint16 nextBlockSize;
     QTimer *timer;
     QTimer *timerCheckConnection;
+    bool isConnected;
 
     void sendToServer(QString str);
     void setDiskInfo(QMap<int, QList<QString>> diskInfo);
     void checkConnection();
+    void setIpValidator();
 
 
 };

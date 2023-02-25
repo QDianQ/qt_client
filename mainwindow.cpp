@@ -3,14 +3,17 @@
 
 #include <QMessageBox>
 #include <QStorageInfo>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    socket = new QTcpSocket(this);
+
     nextBlockSize = 0;
+    isConnected = false;
 
     QTreeWidgetItem *treeHeader = new QTreeWidgetItem();
 
@@ -25,39 +28,64 @@ MainWindow::MainWindow(QWidget *parent)
     ui->doubleSpinBox->setMaximum(10.00);
     ui->doubleSpinBox->setValue(10.00);
 
+    setIpValidator();
 
     timer = new QTimer(this);
     timerCheckConnection = new QTimer(this);
 
     connect(timer, SIGNAL(timeout()), this, SLOT(slotTimer()));
     connect(timerCheckConnection, SIGNAL(timeout()), this, SLOT(slotTimerCheckConnection()));
-    connect(socket, &QTcpSocket::readyRead, this, &MainWindow::slotReadyRead);
-    connect(socket, &QTcpSocket::disconnected, socket, &QTcpSocket::deleteLater);
 }
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+void MainWindow::setIpValidator()
+{
+    QString ipRange = "(([ 0]+)|([ 0]*[0-9] *)|([0-9][0-9] )|([ 0][0-9][0-9])|(1[0-9][0-9])|([2][0-4][0-9])|(25[0-5]))";
+    QRegularExpression ipRegex ("^" + ipRange
+                     + "\\." + ipRange
+                     + "\\." + ipRange
+                     + "\\." + ipRange + "$");
+    QRegularExpressionValidator *ipValidator = new QRegularExpressionValidator(ipRegex, this);
+    ui->input_IP->setValidator(ipValidator);
+    ui->input_IP->setInputMask("000.000.000.000");
+}
 void MainWindow::on_connectBtn_clicked()
 {
-
-
-    QString input_ip = ui->input_IP->text();
-    QString input_port = ui->input_port->text();
-
-    socket->connectToHost(input_ip, input_port.toInt());
-
-    if (QAbstractSocket::ConnectedState == socket->state())
+    if (!isConnected)
     {
-        qDebug() << "Connected";
+        QString input_ip = ui->input_IP->text();
+        QString input_port = ui->input_port->text();
+
+        socket = new QTcpSocket(this);
+        connect(socket, &QTcpSocket::readyRead, this, &MainWindow::slotReadyRead);
+        connect(socket, &QTcpSocket::disconnected, socket, &QTcpSocket::deleteLater);
+
+        socket->connectToHost(input_ip, input_port.toInt());
+
+        sendToServer("_getDiskInfo");
+
+        timerCheckConnection->setInterval(1000);
+        timerCheckConnection->start();
+
+        timer->setInterval(ui->doubleSpinBox->value() * 1000);
+        timer->start();
+        ui->connectBtn->setText("Disconnect");
+        ui->statusConnection->setText("Status: connected");
+        isConnected = true;
     }
-    sendToServer("_getDiskInfo");
+    else
+    {
+        timer->stop();
+        timerCheckConnection->stop();
+        socket->disconnectFromHost();
 
-    timerCheckConnection->setInterval(1000);
-    timerCheckConnection->start();
+        ui->connectBtn->setText("Connect");
+        ui->statusConnection->setText("Status: disconnected");
+        isConnected = false;
+    }
 
-    timer->setInterval(ui->doubleSpinBox->value() * 1000);
-    timer->start();
 }
 void MainWindow::sendToServer(QString str)
 {
@@ -81,10 +109,6 @@ void MainWindow::setDiskInfo(QMap<int, QList<QString> > diskInfo)
             id_column = 0;
             for (QString j : diskInfo[i])
             {
-//                qDebug() << "index: " << i
-//                         << "column" << id_column
-//                         << "item: " << j;
-
                 treeItems->setText(id_column, j);
                 id_column++;
             }
@@ -106,15 +130,9 @@ void MainWindow::setDiskInfo(QMap<int, QList<QString> > diskInfo)
     }
 
 }
-
 void MainWindow::checkConnection()
 {
-    if (QAbstractSocket::UnconnectedState == socket->state())
-    {
 
-        QMessageBox::warning(this, "Warning!", "Client was disconnected.");
-        timerCheckConnection->stop();
-    }
 }
 void MainWindow::slotReadyRead()
 {
@@ -150,21 +168,33 @@ void MainWindow::slotReadyRead()
         qDebug() << ("read error");
     }
 }
-void MainWindow::on_disconnectBtn_clicked()
-{
-    timer->stop();
-    timerCheckConnection->stop();
-    socket->disconnectFromHost();
-
-    qDebug() << "client was disconnected";
-}
 void MainWindow::slotTimer()
 {
-    sendToServer("_getDiskInfo");
+    if (QAbstractSocket::ConnectedState == socket->state())
+    {
+        sendToServer("_getDiskInfo");
+    }
+    else
+    {
+        timer->stop();
+    }
 }
 void MainWindow::slotTimerCheckConnection()
 {
-    checkConnection();
+    if (QAbstractSocket::UnconnectedState == socket->state())
+    {
+
+        timer->stop();
+        timerCheckConnection->stop();
+
+        socket->disconnectFromHost();
+        ui->connectBtn->setText("Connect");
+        ui->statusConnection->setText("Status: disconnected");
+        isConnected = false;
+
+        QMessageBox::warning(this, "Warning!", "Client was disconnected.");
+
+    }
 }
 void MainWindow::on_setTimer_clicked()
 {

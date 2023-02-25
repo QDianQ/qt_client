@@ -6,81 +6,185 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>585</width>
-    <height>343</height>
+    <width>558</width>
+    <height>417</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="3" column="2">
-     <widget class="QPushButton" name="disconnectBtn">
-      <property name="text">
-       <string>disconnect</string>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>IP</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="connectBtn">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Connect</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="input_port">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>2323</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="input_IP">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>127.0.0.1</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Port</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <property name="topMargin">
+       <number>20</number>
       </property>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Set timer value</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QDoubleSpinBox" name="doubleSpinBox">
+        <property name="maximumSize">
+         <size>
+          <width>70</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="setTimer">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Apply</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Timer</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QTreeWidget" name="treeWidget">
+      <column>
+       <property name="text">
+        <string notr="true">1</string>
+       </property>
+      </column>
      </widget>
     </item>
-    <item row="4" column="0" colspan="3">
-     <widget class="QTreeWidget" name="treeWidget"/>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLabel" name="label_2">
+    <item>
+     <widget class="QLabel" name="statusConnection">
       <property name="text">
-       <string>Port</string>
+       <string>Status connection: disconnect</string>
       </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QPushButton" name="setTimer">
-      <property name="text">
-       <string>Apply</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>IP</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="input_port">
-      <property name="text">
-       <string>2323</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QPushButton" name="connectBtn">
-      <property name="text">
-       <string>connect</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLineEdit" name="input_IP">
-      <property name="text">
-       <string>127.0.0.1</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>Timer (min: 0.01; max: 10 sec)</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>Set timer value</string>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
@@ -91,7 +195,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>585</width>
+     <width>558</width>
      <height>21</height>
     </rect>
    </property>
